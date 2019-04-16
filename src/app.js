@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 7000;
+const port = 9000;
 
 // dependencies
 const cors = require('cors');
@@ -22,9 +22,7 @@ app.use(cors());
 // routes
 app.use('/', express.static('public'));
 
-app.use('/api', router);
-
-
+app.use('/api', router);   
 
 // response
 app.get('/', (req,res)=>{

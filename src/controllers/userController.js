@@ -1,39 +1,37 @@
 const User = require('../models/userModel');
 
 
-// ------------ create new User ------------------
+// ------------ CREATE NEW USER ----------------
 module.exports.newUser = async (req,res) =>{
 // catch data from request body
   const data = {
     email:req.body.email,
     password:req.body.password, 
   }
-// create user based user model
-  const newUser = new User(data);
 
-// if err send error message 
-  await newUser.save((err,doc)=> {
-    if(err){ 
-      res.json({status: false, message:err.message})
-    } 
-    res.json({
+  try{
+    // create user based user model
+    const newUser = await new User(data);
+    await newUser.save();
+    res.status(201).json({
       status: 'Success',
       message:'User created',
-      user:doc
-    })
-  }); 
+      user: newUser
+    });  
+  }catch(err){
+    res.status(400).json({status: false, message:err.message})
+  } 
   
 } 
-// -----------------------------------------------
 
 
-// --------------- login User --------------------
+// --------------- LOGIN USER ------------------
 module.exports.login = async (req, res) =>{
 // get email we will find user with this email 
   const email = req.body.email;
 
 // lets find user using mongoose method findOne
- const knockKnock =  await User.findOne({email}, (err,user)=>{
+  await User.findOne({email}, (err,user)=>{
 // if user not found throw error json
     if(err){
       res.status(400).json({
@@ -43,7 +41,7 @@ module.exports.login = async (req, res) =>{
 // if user found - send json
     res.json({
       success: true,
-      message: 'User succesfully logined',
+      message: `User ${user.email}succesfully logined`,
       user:{ 
         id : user._id,
         token: 'hdfjtFf%8sdfsm2n'
@@ -54,7 +52,7 @@ module.exports.login = async (req, res) =>{
 } 
 
 
-// ----------------- UPDATE DATA -------------------------
+// ----------------- UPDATE DATA ----------------
 
 module.exports.updatePassword = async (req,res)=>{
   const newPassword = req.body.newPassword;
@@ -68,14 +66,10 @@ module.exports.updatePassword = async (req,res)=>{
    
 }
 
-// --------------------------  LOGOUT --------------------------
+
+// ----------------- LOGOUT --------------------
 module.exports.logout = (req,res) =>{
   res.json({
     message: 'User successfully Logout'
   })
 } 
-
-const sss = ()=>{
-  console.log('ffff');
-}
-;

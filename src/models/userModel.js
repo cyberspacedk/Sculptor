@@ -19,9 +19,8 @@ const userSchema = new Schema({
 );
 
 // -------- Х Е Ш И Р О В А Н И Е   П А Р О Л Я  --------
-
-// 
-userSchema.pre("save", (next) =>{
+ 
+userSchema.pre("save", function(next){
 
 // ссылка на документ по схеме userSchema
   const user = this;

@@ -1,4 +1,8 @@
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
+
+
+
 
 
 // ------------ CREATE NEW USER ----------------
@@ -27,30 +31,17 @@ module.exports.newUser = async (req,res) =>{
 
 // --------------- LOGIN USER ------------------
 module.exports.login = async (req, res) =>{
+
 // get email we will find user with this email 
   const email = req.body.email;
-
-// lets find user using mongoose method findOne
-  await User.findOne({email}, (err,user)=>{
-// if user not found throw error json
-    if(err){
-      res.status(400).json({
-      message: err.message
-     })
-    }
-// if user found - send json
-    res.json({
-      success: true,
-      message: `User ${user.email}succesfully logined`,
-      user:{ 
-        id : user._id,
-        token: 'hdfjtFf%8sdfsm2n'
-        } 
-    })
-  }).lean();
-  // lean method clean up object from odd methods and make object clean  
+  try{
+    const user = await User.findOne({email});  
+    const token = jwt.sign({user: user.email}, 'secret-word', {expiresIn: 100} );  
+    res.status(200).json({success:true, message:'User found', userId:user._id, token:token}); 
+  }catch(error){
+    res.status(404).json({success:false, message: error.message})
+  }
 } 
-
 
 // ----------------- UPDATE DATA ----------------
 

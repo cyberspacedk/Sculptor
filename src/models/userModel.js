@@ -22,7 +22,7 @@ const userSchema = new Schema({
  
 userSchema.pre("save", function(next){
 
-// ссылка на документ по схеме userSchema
+// ссылка на контекст конструктора userSchema
   const user = this;
 
 // проверяем поле password.  
@@ -37,17 +37,17 @@ userSchema.pre("save", function(next){
     bcrypt.genSalt(10, (err, salt)=>{
       // обрабатываем ошибку и передаем в SAVE
       if (err)  return next(err); 
+
       // метод HASH хеширует с помощью созданного ключа 
       bcrypt.hash(user.password, salt, (err, hash) =>{
       // обрабатываем ошибку и передаем в SAVE
-        if (err) {
-          return next(err);
-        }
+        if (err) return next(err); 
       // переписываем поле password. ставим новое значение  hash 
         user.password = hash;
       // передаем измененное поле дальше для сохранения в SAVE
         next();
       });
+
     });
   } 
 
@@ -55,6 +55,7 @@ userSchema.pre("save", function(next){
   else {
     return next();
   }
+  
 });
 
 

@@ -2,33 +2,21 @@ const Goal = require("../models/goalModel");
 
 module.exports.updateTask = (req, res) => {
   
-  const goalId = "5cb5d2d318fa66265c4edaf7"; 
-  const taskElementId = "5cb5d5611141693db8464864"; 
+  const goalId = req.body.goalId;
+  const taskElementId = req.body.taskElementId;
+  const taskTitle = req.body.taskTitle;
 
-
-  Goal.updateOne(
-    { _id: goalId, "goalTasks._id": taskElementId },
-    { $set: { "goalTasks.$.taskTitle" : 'PIHAEM 1 2 3.......' } }, 
+  Goal.findOneAndUpdate(
+    { _id:goalId,"goalTasks._id":taskElementId},
+    { $set:{"goalTasks.$.taskTitle":taskTitle}  },
+    {new:true,upsert:true},
     (err,doc)=>{
-      console.log(doc);
+        if(err){ return console.log(err)}
+        console.log(doc);
+        res.json(doc)
     }
- )
-  };
-
-  // // ID елемента массива в цели
-  // const taskElementId = "5cb5d5611141693db8464864";
-
-  // // фильтруем массив и исключаем из него елемент, который равен переданному ID
-  // const array = findTask.goalTasks.map(el =>
-  //   String(el._id) === taskElementId
-  //     ? { ...el, taskTitle: "NEW TITLE "}
-  //     : el
-  // );
-
-  // findTask.goalTasks = array;
-  // findTask.save();
-
-  // console.log(findTask);
+  )
+}
 
 
 module.exports.addTask = async (req, res) => {

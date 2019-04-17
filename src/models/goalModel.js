@@ -16,7 +16,7 @@ const goalSchema = new Schema({
     type: Number,
     default: 1
   },
-  goalTasks: [taskSchema],
+  // goalTasks: [taskSchema],
   goalColor:{
     type:String
   },

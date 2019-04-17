@@ -7,7 +7,7 @@ const taskSchema = new Schema({
     type: String,
     required: true
   },
-  taslWeekRange:{
+  taskWeekRange:{
     type: Number,
     required: true
   },
@@ -19,7 +19,16 @@ const taskSchema = new Schema({
   },
   isTaskActive:{
     type: Boolean
-  } 
+  } ,
+  ownerId:{
+    type:String, 
+  },
+  refGoal:{
+    type:Schema.Types.ObjectId,
+    ref: 'Goal' 
+  }
 })
- 
-module.exports = taskSchema;
+
+const Task = mongoose.model('Task', taskSchema);
+
+module.exports = Task;

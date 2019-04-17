@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
-const port = 9000;
+
+require('dotenv').config();
+
+const port = process.env.PORT;
 
 // dependencies
 const cors = require('cors');
@@ -9,7 +12,7 @@ const logger = require('morgan');
 const router = require('./routes/routes');
 
 // database
-const uri= 'mongodb+srv://cyberspacedk:010203@cluster0-r6l9q.mongodb.net/Sculptor?retryWrites=true';
+const uri= process.env.URL_MONGODB;
 mongoose.connect(uri,{useNewUrlParser:true}).then((data)=>console.log("CONNECTED")).catch(err=>console.log(err))
 
 // middleware

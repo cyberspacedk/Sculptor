@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const bcrypt = require('bcrypt');
+
+
 
 const userSchema = new Schema({
   email: {
@@ -19,13 +20,15 @@ const userSchema = new Schema({
 );
 
 // -------- Х Е Ш И Р О В А Н И Е   П А Р О Л Я  --------
- 
+
+// ОБРАБОТКА ЛЮБЫХ ОПЕРАЦИЙ С USEROM ПЕРЕД СОХРАНЕНИЕМ
 userSchema.pre("save", function(next){
 
-// ссылка на контекст конструктора userSchema
+// ссылка на созданный НО НЕ сохраненный объект на базе конструктора userSchema
+// В НЕМ УЖЕ НАБИТЫ ДАННЫЕ ОТ ПОЛЬЗОВАТЕЛЯ. EMAIL и PASSWORD
   const user = this;
 
-// проверяем поле password.  
+// проверяем поле password МЕТОДЫ MONGOOSE
 // isModified - проверяет поле на изменение
 // isNew - проверяет новое ли поле 
 

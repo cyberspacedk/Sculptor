@@ -16,12 +16,15 @@ module.exports.newUser = async (req,res) =>{
   try{
     // create user based user model
     const newUser = await new User(data);
+
     await newUser.save();
+
     res.status(201).json({
       status: 'Success',
       message:'User created',
       user: newUser
     });  
+    
   }catch(err){
     res.status(400).json({status: false, message:err.message})
   } 
@@ -36,12 +39,26 @@ module.exports.login = async (req, res) =>{
   const email = req.body.email;
   try{
     const user = await User.findOne({email});  
-    const token = jwt.sign({user: user.email}, 'secret-word', {expiresIn: 100} );  
+    const token = jwt.sign({user: user.email}, 'secret-word', {expiresIn: 10000} );  
     res.status(200).json({success:true, message:'User found', userId:user._id, token:token}); 
   }catch(error){
     res.status(404).json({success:false, message: error.message})
   }
 } 
+
+
+
+module.exports.verify = (token)=>{
+
+  try {
+    const decoded = jwt.verify(token, 'secret-word');
+    next()
+  } catch(err) {
+     res.send("Invalid token")
+  }
+}
+
+
 
 // ----------------- UPDATE DATA ----------------
 

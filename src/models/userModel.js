@@ -7,14 +7,22 @@ const bcrypt = require('bcrypt');
 const userSchema = new Schema({
   email: {
     type:String,
-    required: true, 
     // делаем поле уникальным, иначе не сохранит в базу
-    unique: true
+    unique: true,
+    index: true
   },
   password:{
     type:String,
-    required: true
-  }
+  },
+  githubId: {
+    type:Number
+  }, 
+  avatar: {
+    type:String
+  }, 
+  name:{
+    type: String
+  } 
 },
 {timestamps: true}
 );
@@ -23,11 +31,11 @@ const userSchema = new Schema({
 
 // ОБРАБОТКА ЛЮБЫХ ОПЕРАЦИЙ С USEROM ПЕРЕД СОХРАНЕНИЕМ
 userSchema.pre("save", function(next){
-
 // ссылка на созданный НО НЕ сохраненный объект на базе конструктора userSchema
 // В НЕМ УЖЕ НАБИТЫ ДАННЫЕ ОТ ПОЛЬЗОВАТЕЛЯ. EMAIL и PASSWORD
   const user = this;
 
+  if(!user.password) return next();
 // проверяем поле password МЕТОДЫ MONGOOSE
 // isModified - проверяет поле на изменение
 // isNew - проверяет новое ли поле 

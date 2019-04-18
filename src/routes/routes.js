@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 // middleware
 const authCheck = require('../middleware/authCheck');
 
@@ -32,13 +33,13 @@ router.put('/task', authCheck , taskController.updateTask);
 router.post('/task', authCheck , taskController.addTask);
 
 
+// GITHUB
+router.get( "/auth/github", passport.authenticate("github", { scope: ["user:email"] }) );
 
-
-
-
-
-
-
-
+router.get( "/auth/github/callback", passport.authenticate("github", { 
+  successRedirect: '/dashboard',
+  failureRedirect: "/login" 
+})
+);
 
 module.exports = router;

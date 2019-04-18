@@ -16,12 +16,15 @@ module.exports.newUser = async (req,res) =>{
   try{
     // create user based user model
     const newUser = await new User(data);
+
     await newUser.save();
+
     res.status(201).json({
       status: 'Success',
       message:'User created',
       user: newUser
     });  
+
   }catch(err){
     res.status(400).json({status: false, message:err.message})
   } 
@@ -32,16 +35,29 @@ module.exports.newUser = async (req,res) =>{
 // --------------- LOGIN USER ------------------
 module.exports.login = async (req, res) =>{
 
-// get email we will find user with this email 
-  const email = req.body.email;
+// получаем данные от юзера
+  const {email, password} = req.body;
+
   try{
-    const user = await User.findOne({email});  
-    const token = jwt.sign({user: user.email}, 'secret-word', {expiresIn: 100} );  
-    res.status(200).json({success:true, message:'User found', userId:user._id, token:token}); 
-  }catch(error){
+// находим конкретного юзера пр email
+    const user = await User.findOne({email});   
+// сравниваем пароль  
+    newUser.comparePassword(password, (error, isMatch)=>{ 
+      if(isMatch){ 
+// создаем токен, подписываем его  
+      const token = jwt.sign({user : user.email}, 'secret-word');
+// отвечаем. передавая дополнительно на клиент _id и token юзера
+      res.status(200).json({success:true, message:'User found', userId: user._id, token:token}); 
+    }else{
+      res.status(401).json({success:false, message:'Not valid'})
+    }
+    }) 
+  }
+  catch(error){
     res.status(404).json({success:false, message: error.message})
   }
 } 
+
 
 // ----------------- UPDATE DATA ----------------
 

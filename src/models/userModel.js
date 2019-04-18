@@ -62,6 +62,35 @@ userSchema.pre("save", function(next){
 });
 
 
+// HELPERS METHODS 
+
+userSchema.methods.comparePassword = function(password, callback){
+   bcrypt.compare(password, this.password, function(error, isMatch){
+     if(error) return callback(err)
+     return callback(null, isMatch);
+   })
+}
+
+userSchema.methods.generateHash = function(password){
+  return bcrypt.hashSync(password, bcrypt.genSalt(10), null);
+}
+
+userSchema.methods.validPassword = function(password){
+  return bcrypt.compareSync(password, this.password);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const User = mongoose.model('User', userSchema);
 

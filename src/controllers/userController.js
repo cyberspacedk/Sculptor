@@ -35,28 +35,70 @@ module.exports.newUser = async (req,res) =>{
 // --------------- LOGIN USER ------------------
 module.exports.login = async (req, res) =>{
 
-// получаем данные от юзера
-  const {email, password} = req.body;
+  passport.authenticate(
+    "local",
+    {
+      session: true
+    },
+    (err, user, info) => {
+      if (err || !user) {
+        return res.status(400).json({
+          message: info ? info.message : "Login failed",
+          user: user
+        });
+      }
 
-  try{
-// находим конкретного юзера пр email
-    const user = await User.findOne({email});   
-// сравниваем пароль  
-    newUser.comparePassword(password, (error, isMatch)=>{ 
-      if(isMatch){ 
-// создаем токен, подписываем его  
-      const token = jwt.sign({user : user.email}, 'secret-word');
-// отвечаем. передавая дополнительно на клиент _id и token юзера
-      res.status(200).json({success:true, message:'User found', userId: user._id, token:token}); 
-    }else{
-      res.status(401).json({success:false, message:'Not valid'})
+      req.login(
+        user,
+        {
+          session: false
+        },
+        err => {
+          if (err) {
+            res.send(err);
+          }
+
+          const token = jwt.sign(
+            { user: user._id, email: user.email },
+            process.env.JWT_SECRET_KEY
+          );
+          
+          return res.json({
+            success: true,
+            message: "Success Logined",
+            userId: user._id,
+            token: token
+          });
+        }
+      );
     }
-    }) 
-  }
-  catch(error){
-    res.status(404).json({success:false, message: error.message})
-  }
-} 
+  )(req, res);
+};
+
+
+
+// // получаем данные от юзера
+//   const {email, password} = req.body;
+
+//   try{
+// // находим конкретного юзера пр email
+//     const user = await User.findOne({email});   
+// // сравниваем пароль  
+//     newUser.comparePassword(password, (error, isMatch)=>{ 
+//       if(isMatch){ 
+// // создаем токен, подписываем его  
+//       const token = jwt.sign({user : user.email}, 'secret-word');
+// // отвечаем. передавая дополнительно на клиент _id и token юзера
+//       res.status(200).json({success:true, message:'User found', userId: user._id, token:token}); 
+//     }else{
+//       res.status(401).json({success:false, message:'Not valid'})
+//     }
+//     }) 
+//   }
+//   catch(error){
+//     res.status(404).json({success:false, message: error.message})
+//   }
+// } 
 
 
 // ----------------- UPDATE DATA ----------------

@@ -22,7 +22,10 @@ const userSchema = new Schema({
   }, 
   name:{
     type: String
-  } 
+  },
+  twitterId:{
+    type:String
+  }
 },
 {timestamps: true}
 );

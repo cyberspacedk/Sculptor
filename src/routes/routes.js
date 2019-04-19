@@ -11,6 +11,7 @@ const authCheck = require('../middleware/authCheck');
 const userController = require('../controllers/userController'); 
 
 router.post('/registration', userController.newUser);  
+
 router.post('/login',  userController.login);   
 router.post('/update', userController.updatePassword);  
 router.get('/logout',  userController.logout); 
@@ -32,14 +33,46 @@ const taskController= require('../controllers/taskController');
 router.put('/task', authCheck , taskController.updateTask);
 router.post('/task', authCheck , taskController.addTask);
 
-
 // GITHUB
-router.get( "/auth/github", passport.authenticate("github", { scope: ["user:email"] }) );
-
-router.get( "/auth/github/callback", passport.authenticate("github", { 
-  successRedirect: '/dashboard',
-  failureRedirect: "/login" 
-})
+router.get(
+  "/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
 );
+
+router.get(
+  "/auth/github/callback",
+  passport.authenticate("github", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login"
+  })
+);
+
+// GOOGLE
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login"
+  })
+);
+
+// FACEBOOK
+router.get("/auth/facebook", passport.authenticate("facebook"));
+
+router.get(
+  "/auth/facebook/callback",
+  passport.authenticate("facebook", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login"
+  })
+);
+
+
+
 
 module.exports = router;
